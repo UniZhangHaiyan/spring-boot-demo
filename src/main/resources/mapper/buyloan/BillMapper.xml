@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.buyloan.IBillMapper">
+
+    <sql id="baseColumn">
+        bill.bill_id,
+        bill.bill_code,
+        bill.user_code,
+        bill.user_name,
+        bill.user_mobile,
+        bill.bill_month,
+        bill.bill_date,
+        bill.plan_repay_date,
+        bill.unstaging_captail,
+        bill.staging_captail,
+        bill.re_staging_captail,
+        bill.previous_unpay_captail,
+        bill.service_charge,
+        bill.min_repay_money,
+        bill.repay_status,
+        bill.bill_status,
+        bill.accounting_time,
+        bill.create_time,
+        bill.can_stage,
+        bill.overdue_flag,
+        bill.funding_code
+    </sql>
+
+    <sql id="selectCondition">
+        <where>
+            <if test="billCode != null and billCode !=''">
+                AND bill_code = #{billCode}
+            </if>
+
+            <if test="userCode != null and userCode !=''">
+                AND user_code = #{userCode}
+            </if>
+            <if test="userName != null and userName !=''">
+                AND user_name like concat('%', #{userName},'%')
+            </if>
+            <if test="userMobile != null and userMobile !=''">
+                AND user_mobile = #{userMobile}
+            </if>
+            <if test="repayStatus !=null">
+                <choose>
+                    <when test="repayStatus == 40">
+                        AND repay_status IN (10, 20)
+                        AND overdue_flag = 1
+                    </when>
+                    <otherwise>
+                        AND repay_status = #{repayStatus}
+                        AND (overdue_flag = 0 OR overdue_flag IS NULL)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="overdueFlag != null">
+                AND overdue_flag = #{overdueFlag}
+            </if>
+
+            <if test="startAccountingTime != null and startAccountingTime !=''">
+                AND accounting_time >= #{startAccountingTime}
+            </if>
+            <if test="endAccountingTime != null and endAccountingTime !=''">
+                AND #{endAccountingTime} >= accounting_time
+            </if>
+
+            <if test="startCreateTime != null and startCreateTime !=''">
+                AND create_time >= #{startCreateTime}
+            </if>
+            <if test="endCreateTime != null and endCreateTime !=''">
+                AND #{endCreateTime} >= create_time
+            </if>
+
+            <if test="startOverdueDays != null">
+                AND
+                (
+                SELECT
+                count(1)
+                FROM bl_bill_overdue overdue
+                where overdue.bill_code = bill.bill_code
+                ) >= #{startOverdueDays}
+            </if>
+            <if test="endOverdueDays != null">
+                AND #{endOverdueDays} >=
+                (
+                SELECT
+                count(1)
+                FROM bl_bill_overdue overdue
+                where overdue.bill_code = bill.bill_code
+                )
+            </if>
+            <if test="userCodeList != null">
+                AND user_code IN
+                <foreach collection="userCodeList" item="userCode" index="index" separator="," open="(" close=")">
+                    #{userCodeList[${index}]}
+                </foreach>
+            </if>
+            <if test="billMonth !=null and billMonth !=''">
+                AND bill_month = #{billMonth}
+            </if>
+            <if test="billStatus !=null">
+                AND bill_status = #{billStatus}
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="model" type="com.example.demo.entity.buyloan.BillEntity">
+        <id property="billId" column="bill_id"></id>
+        <result property="billCode" column="bill_code"></result>
+    </resultMap>
+    <select id="selectBillList" resultType="com.example.demo.entity.buyloan.BillEntity">
+        SELECT
+        bill.bill_id,
+        bill.bill_code
+        FROM bl_bill bill
+        <include refid="selectCondition"/>
+        ORDER BY create_time DESC
+        <if test="startRow != null and rows != null">
+            limit ${startRow},${rows}
+        </if>
+    </select>
+
+    <select id="selectBillCount" resultType="java.lang.Long">
+        select count(1)
+        from bl_bill bill
+        <include refid="selectCondition"/>
+    </select>
+
+    <select id="selectByBillCode" parameterType="java.lang.String"
+            resultType="com.example.demo.entity.buyloan.BillEntity">
+        select
+        <include refid="baseColumn"/>
+        from bl_bill bill
+        WHERE bill_code = #{value}
+    </select>
+</mapper>

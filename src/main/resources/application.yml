@@ -1,0 +1,45 @@
+db:
+    user-master:
+        jdbcUrl: jdbc:mysql://39.104.126.12:3307/user
+        username: root
+        password: 1q2w3e
+    user-slave:
+        jdbcUrl: jdbc:mysql://39.104.126.12:3307/user
+        username: root
+        password: 1q2w3e
+    buyloan-master:
+        jdbcUrl: jdbc:mysql://39.104.126.12:3307/buyloan
+        username: root
+        password: 1q2w3e
+    buyloan-slave:
+        jdbcUrl: jdbc:mysql://39.104.126.12:3307/buyloan
+        username: root
+        password: 1q2w3e
+mybatis:
+    config-location: classpath:mybatis/mybatis-config.xml
+    mapper-locations: classpath:mapper/*/*/*.xml
+logging:
+    level:com.example.demo.dao = DEBUG
+
+#使用spring-boot的redis配置
+spring:
+    redis:
+      #jedis:
+       # pool:
+       #   max-idle: 1
+       #   max-wait: 2000
+       #   max-active: 2
+      #cluster:
+      #  nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
+      host: localhost
+      timeout: 500
+
+#自定义redis配置
+customer:
+    redis:
+     cluster: 127.0.0.1:6379
+     timeout: 500
+     pool:
+        max-idle: 1
+        max-wait: 2000
+        max-active: 2
