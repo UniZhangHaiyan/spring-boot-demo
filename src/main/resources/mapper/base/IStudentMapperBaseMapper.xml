@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.base.IStudentMapperBaseMapper">
+
+
+    <insert id="insertStudent"  useGeneratedKeys="true" keyProperty="studentId">
+        INSERT INTO `student`
+        (
+        <trim suffixOverrides=",">
+                    <if test="studentId!=null">
+                        `student_id`,
+                    </if>
+                    <if test="studentName!=null">
+                        `student_name`,
+                    </if>
+                    <if test="studentCode!=null">
+                        `student_code`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="studentId!=null">
+                    #{studentId},
+                </if>
+                <if test="studentName!=null">
+                    #{studentName},
+                </if>
+                <if test="studentCode!=null">
+                    #{studentCode},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updateStudent">
+        UPDATE `student`
+        SET
+        <trim suffixOverrides=",">
+            <if test="studentName != null and studentName!=''">
+                `student_name` = #{studentName},
+            </if>
+            <if test="studentCode != null and studentCode!=''">
+                `student_code` = #{studentCode},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `student_id` = #{studentId} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `student`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.studentName != null and set.studentName!=''">
+            `student_name` = #{set.studentName},
+        </if>
+        <if test="set.studentCode != null and set.studentCode!=''">
+            `student_code` = #{set.studentCode},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.studentIdList != null">
+                    `student_id` in
+                    <foreach collection="where.studentIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.studentIdSt !=null">
+                `student_id` >= #{where.studentIdSt} and
+            </if>
+            <if test="where.studentIdEd!=null">
+                `student_id` &lt;= #{where.studentIdEd} and
+            </if>
+                <if test="where.studentNameList != null">
+                    `student_name` in
+                    <foreach collection="where.studentNameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyStudentName!=null and where.fuzzyStudentName.size()>0">
+                (
+                <foreach collection="where.fuzzyStudentName"  separator="or" item="item">
+                    `Student_name` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyStudentName!=null and where.rightFuzzyStudentName.size()>0">
+                (
+                <foreach collection="where.rightFuzzyStudentName"  separator="or" item="item">
+                    `Student_name` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.studentCodeList != null">
+                    `student_code` in
+                    <foreach collection="where.studentCodeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyStudentCode!=null and where.fuzzyStudentCode.size()>0">
+                (
+                <foreach collection="where.fuzzyStudentCode"  separator="or" item="item">
+                    `Student_code` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyStudentCode!=null and where.rightFuzzyStudentCode.size()>0">
+                (
+                <foreach collection="where.rightFuzzyStudentCode"  separator="or" item="item">
+                    `Student_code` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="com.example.demo.entity.Student" id="StudentMap">
+        <result property="studentId" column="student_id"/>
+        <result property="studentName" column="student_name"/>
+        <result property="studentCode" column="student_code"/>
+    </resultMap>
+
+
+    <select id="queryStudent" resultMap="StudentMap">
+        select
+        <include refid="baseResult"></include>
+        from  `student`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="studentId != null">
+                `student_id` = #{studentId} and
+            </if>
+            <if test="studentName != null and studentName!=''">
+                `student_name` = #{studentName} and
+            </if>
+            <if test="studentCode != null and studentCode!=''">
+                `student_code` = #{studentCode} and
+            </if>
+            <if test = "(_parameter instanceof com.example.demo.entity.Student$QueryBuilder) == true">
+                <if test="studentIdList != null">
+                    `student_id` in
+                    <foreach collection="studentIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="studentIdSt !=null">
+                    `student_id` >= #{studentIdSt} and
+                </if>
+                <if test="studentIdEd!=null">
+                    `student_id` &lt;= #{studentIdEd} and
+                </if>
+                <if test="studentNameList != null">
+                    `student_name` in
+                    <foreach collection="studentNameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyStudentName!=null and fuzzyStudentName.size()>0">
+                    (
+                    <foreach collection="fuzzyStudentName"  separator="or" item="item">
+                        `Student_name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudentName!=null and rightFuzzyStudentName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudentName"  separator="or" item="item">
+                        `Student_name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="studentCodeList != null">
+                    `student_code` in
+                    <foreach collection="studentCodeList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyStudentCode!=null and fuzzyStudentCode.size()>0">
+                    (
+                    <foreach collection="fuzzyStudentCode"  separator="or" item="item">
+                        `Student_code` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudentCode!=null and rightFuzzyStudentCode.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudentCode"  separator="or" item="item">
+                        `Student_code` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryStudentLimit1" resultMap="StudentMap">
+        select
+        <include refid="baseResult"></include>
+        from  `student`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="studentId != null">
+                `student_id` = #{studentId} and
+            </if>
+            <if test="studentName != null and studentName!=''">
+                `student_name` = #{studentName} and
+            </if>
+            <if test="studentCode != null and studentCode!=''">
+                `student_code` = #{studentCode} and
+            </if>
+            <if test = "(_parameter instanceof com.example.demo.entity.Student$QueryBuilder) == true">
+                    <if test="studentIdList != null">
+                        `student_id` in
+                        <foreach collection="studentIdList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="studentIdSt !=null">
+                    `student_id` >= #{studentIdSt} and
+                </if>
+                <if test="studentIdEd!=null">
+                    `student_id` &lt;= #{studentIdEd} and
+                </if>
+                    <if test="studentNameList != null">
+                        `student_name` in
+                        <foreach collection="studentNameList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyStudentName!=null and fuzzyStudentName.size()>0">
+                    (
+                    <foreach collection="fuzzyStudentName"  separator="or" item="item">
+                        `Student_name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudentName!=null and rightFuzzyStudentName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudentName"  separator="or" item="item">
+                        `Student_name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="studentCodeList != null">
+                        `student_code` in
+                        <foreach collection="studentCodeList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyStudentCode!=null and fuzzyStudentCode.size()>0">
+                    (
+                    <foreach collection="fuzzyStudentCode"  separator="or" item="item">
+                        `Student_code` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudentCode!=null and rightFuzzyStudentCode.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudentCode"  separator="or" item="item">
+                        `Student_code` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `student_id`,
+        `student_name`,
+        `student_code`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof com.example.demo.entity.Student$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.studentId==true">
+                        `student_id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.studentName==true">
+                        `student_name`,
+                    </if>
+                    <if test="fetchFields.fetchFields.studentCode==true">
+                        `student_code`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.studentId==null">
+                        `student_id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.studentName==null">
+                        `student_name`,
+                    </if>
+                    <if test="fetchFields.excludeFields.studentCode==null">
+                        `student_code`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof com.example.demo.entity.Student$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

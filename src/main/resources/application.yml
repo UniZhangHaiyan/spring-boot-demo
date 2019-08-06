@@ -1,20 +1,33 @@
 db:
-    user-master:
-        jdbcUrl: jdbc:mysql://39.104.126.12:3307/user
+    #活动库
+    activity-master:
+        jdbcUrl: jdbc:mysql://localhost:3306/activity
         username: root
-        password: 1q2w3e
-    user-slave:
-        jdbcUrl: jdbc:mysql://39.104.126.12:3307/user
+        password: tiger
+    activity-slave:
+        jdbcUrl: jdbc:mysql://localhost:3306/activity
         username: root
-        password: 1q2w3e
-    buyloan-master:
-        jdbcUrl: jdbc:mysql://39.104.126.12:3307/buyloan
+        password: tiger
+
+    #人员库
+    crew-master:
+        jdbcUrl: jdbc:mysql://localhost:3306/crew
         username: root
-        password: 1q2w3e
-    buyloan-slave:
-        jdbcUrl: jdbc:mysql://39.104.126.12:3307/buyloan
+        password: tiger
+    crew-slave:
+        jdbcUrl: jdbc:mysql://localhost:3306/crew
         username: root
-        password: 1q2w3e
+        password: tiger
+
+    #项目库
+    project-master:
+        jdbcUrl: jdbc:mysql://localhost:3306/project
+        username: root
+        password: tiger
+    project-slave:
+        jdbcUrl: jdbc:mysql://localhost:3306/project
+        username: root
+        password: tiger
 mybatis:
     config-location: classpath:mybatis/mybatis-config.xml
     mapper-locations: classpath:mapper/*/*/*.xml
@@ -34,6 +47,10 @@ spring:
       host: localhost
       timeout: 500
 
+    #引入mq配置
+    rabbitmq:
+      host: localhost
+
 #自定义redis配置
 customer:
     redis:
@@ -43,3 +60,7 @@ customer:
         max-idle: 1
         max-wait: 2000
         max-active: 2
+
+#修改默认端口号
+server:
+  port: 8088

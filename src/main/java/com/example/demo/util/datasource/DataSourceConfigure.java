@@ -40,34 +40,48 @@ public class DataSourceConfigure {
      *
      * @return
      */
-    @Bean("user-master")
-    @ConfigurationProperties(prefix = "db.user-master")
-    public DataSource userMaster() {
-        System.out.println("创建数据源-==> userMaster");
+    @Bean("crew-master")
+    @ConfigurationProperties(prefix = "db.crew-master")
+    public DataSource crewMaster() {
+        System.out.println("创建数据源-==> crewMaster");
         return DataSourceBuilder.create().build();
     }
 
-    @Bean("user-slave")
-    @ConfigurationProperties(prefix = "db.user-slave")
-    public DataSource userSlave() {
-        System.out.println("创建数据源-==> userSlave");
+    @Bean("crew-slave")
+    @ConfigurationProperties(prefix = "db.crew-slave")
+    public DataSource crewSlave() {
+        System.out.println("创建数据源-==> crewSlave");
         return DataSourceBuilder.create().build();
     }
 
     /**
      * @Primary 这个注解用于指明主数据源，用了这个之后无法路由到其他数据源，不知道为啥
      */
-    @Bean("buyloan-master")
-    @ConfigurationProperties(prefix = "db.buyloan-master")
-    public DataSource buyloanMaster() {
-        System.out.println("创建数据源-==> buyloanMaster");
+    @Bean("project-master")
+    @ConfigurationProperties(prefix = "db.project-master")
+    public DataSource projectMaster() {
+        System.out.println("创建数据源-==> projectMaster");
         return DataSourceBuilder.create().build();
     }
 
-    @Bean("buyloan-slave")
-    @ConfigurationProperties(prefix = "db.buyloan-slave")
-    public DataSource buyloanSlave() {
-        System.out.println("创建数据源-==> buyloanSlave");
+    @Bean("project-slave")
+    @ConfigurationProperties(prefix = "db.project-slave")
+    public DataSource projectSlave() {
+        System.out.println("创建数据源-==> projectSlave");
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean("activity-master")
+    @ConfigurationProperties(prefix = "db.activity-master")
+    public DataSource activityMaster() {
+        System.out.println("创建数据源-==> activityMaster");
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean("activity-slave")
+    @ConfigurationProperties(prefix = "db.activity-slave")
+    public DataSource activitySlave() {
+        System.out.println("创建数据源-==> activitySlave");
         return DataSourceBuilder.create().build();
     }
 
@@ -90,16 +104,18 @@ public class DataSourceConfigure {
      */
     @Bean
     public DataSource dynamicDataSource() {
-        Map<Object, Object> dataSourceMap = new HashMap<>();
-        dataSourceMap.put("user-slave", userSlave());
-        dataSourceMap.put("user-master", userMaster());
-        dataSourceMap.put("buyloan-slave", buyloanSlave());
-        dataSourceMap.put("buyloan-master", buyloanMaster());
+        Map<Object, Object> dataSourceMap = new HashMap<>(16);
+        dataSourceMap.put("crew-slave", crewSlave());
+        dataSourceMap.put("crew-master", crewMaster());
+        dataSourceMap.put("project-slave", projectSlave());
+        dataSourceMap.put("project-master", projectMaster());
+        dataSourceMap.put("activity-slave", activitySlave());
+        dataSourceMap.put("activity-master", activityMaster());
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
         //设置多数据源
         dynamicDataSource.setTargetDataSources(dataSourceMap);
         //设置默认数据源
-        dynamicDataSource.setDefaultTargetDataSource(buyloanMaster());
+        dynamicDataSource.setDefaultTargetDataSource(crewMaster());
         return dynamicDataSource;
     }
 

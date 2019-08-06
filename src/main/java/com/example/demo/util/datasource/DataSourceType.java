@@ -13,8 +13,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DataSourceType {
-    String value() default "buyloan";
+    String value() default "crew";
 
-    String buyloan = "buyloan";
-    String user = "user";
+    String project = "project";
+    String activity = "activity";
 }
