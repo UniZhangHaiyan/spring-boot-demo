@@ -49,7 +49,17 @@ spring:
 
     #引入mq配置
     rabbitmq:
-      host: localhost
+      host: 127.0.0.1
+      port: 5672
+      username: guest
+      password: guest
+      virtual-host: /
+      publisher-confirms: true
+      publisher-returns: true
+
+      listener:
+        simple:
+          acknowledge-mode: manual
 
 #自定义redis配置
 customer:
