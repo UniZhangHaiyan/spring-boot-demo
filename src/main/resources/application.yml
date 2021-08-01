@@ -71,6 +71,11 @@ customer:
         max-wait: 2000
         max-active: 2
 
+retrofit:
+    base-url:
+      baidu: https://www.baidu.com
+      github: https://github.com
+
 #修改默认端口号
 server:
   port: 8088
