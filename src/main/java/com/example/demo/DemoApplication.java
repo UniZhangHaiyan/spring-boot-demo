@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * @author zhanghaiyan
+ * 测试测试
  */
 @MapperScan("com.example.demo.dao")
 /**
